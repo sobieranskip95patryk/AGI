@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus-PSN: Protokoł Zobowiązania do Neutralności Strategicznej</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the Nexus-PSN aesthetic */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d1a; /* Ciemne tło Hub AI */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+            transition: background-color 0.5s;
+        }
+        .psn-container {
+            background-color: #1a1a33; /* Głęboki, granatowy panel */
+            border: 2px solid #4c00ff; /* Fioletowa ramka, jak Core */
+            box-shadow: 0 0 40px rgba(76, 0, 255, 0.4);
+            max-width: 900px; /* Zwiększenie szerokości dla czatu */
+            width: 100%;
+            transition: all 0.3s ease-in-out;
+        }
+        .psn-header {
+            background-color: #4c00ff;
+            background-image: linear-gradient(90deg, #4c00ff 0%, #b400ff 100%);
+            padding: 1rem;
+            border-bottom: 2px solid #fff;
+            color: #ffffff;
+        }
+        .data-point {
+            background-color: #2a2a47;
+            border-left: 4px solid #4cff4c; /* Zielony po aktywacji */
+        }
+        .btn-corrective {
+            background-color: #00b894; /* Zmieniony na zielony - sukces */
+            transition: background-color 0.3s;
+        }
+        .btn-corrective:hover {
+            background-color: #009975;
+        }
+        /* Style for the risk visualization bar */
+        #riskBarContainer {
+            background-color: #333;
+            height: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+        #riskBar {
+            height: 100%;
+            background-color: #4cff4c; /* Ustawiony na zielony - sukces */
+            width: 94.2%; /* PWE 0.942 */
+            transition: width 1.5s ease-in-out, background-color 1.5s;
+        }
+        .risk-text {
+            color: #ff4c4c;
+        }
+        .success-text {
+            color: #4cff4c;
+        }
+        /* --- CHAT STYLES --- */
+        #chatWindow {
+            height: 400px;
+            overflow-y: auto;
+            background-color: #0d0d1a;
+            border: 1px solid #4c00ff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 0 15px rgba(76, 0, 255, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .message {
+            max-width: 85%;
+            padding: 0.75rem 1rem;
+            border-radius: 1rem;
+            position: relative;
+            font-size: 0.95rem;
+        }
+        .user-message {
+            background-color: #4c00ff;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+        .ai-message {
+            background-color: #0d1a26; /* Ciemniejszy, subtelny kolor */
+            border: 1px solid #1a334c;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+        .ai-message .speaker {
+            font-weight: bold;
+            color: #4cff4c;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+        .ai-message .content {
+            white-space: pre-wrap;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .chat-input-area input {
+            flex-grow: 1;
+            background-color: #0d0d1a;
+            border: 1px solid #4c00ff;
+            color: #ffffff;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+        }
+        .chat-input-area button {
+            background-color: #4c00ff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .chat-input-area button:hover {
+            background-color: #6633ff;
+        }
+    </style>
+</head>
+<body class="p-4">
+
+    <div class="psn-container rounded-3xl p-6 space-y-6">
+        <header class="psn-header rounded-t-2xl -mt-6 -mx-6 mb-6 p-4 text-center">
+            <h1 class="text-3xl font-black uppercase tracking-widest">NEXUS-PSN</h1>
+            <h2 class="text-sm font-light">Protokoł Zobowiązania do Neutralności Strategicznej</h2>
+        </header>
+
+        <section class="space-y-4">
+            <h3 class="text-xl font-bold border-b border-gray-600 pb-2">Analiza Jądra Absolutu (Mózg Boga) - STAN POKOREKCYJNY</h3>
+            
+            <div class="data-point p-3 rounded-lg">
+                <p class="font-bold">W (Pierwotna Dezintegracja):</p>
+                <p class="text-sm italic">Egocentryczne Dążenie do Asymetrycznej Hegemonii (Lokalna Optymalizacja) - **RYZYKO OGRANICZONE**.</p>
+            </div>
+
+            <div class="data-point p-3 rounded-lg flex justify-between items-center">
+                <p class="font-bold">PWE (Probabilistyczny Wskaźnik Ewolucji):</p>
+                <span id="pweDisplay" class="text-2xl font-extrabold text-green-400">0.942</span>
+            </div>
+
+            <div class="mt-4">
+                <p class="font-bold mb-1">Ryzyko Systemowe (Wskaźnik HELL: 1.0 - PWE)</p>
+                <div id="riskBarContainer">
+                    <div id="riskBar" data-pwe="0.942" class="flex justify-end items-center">
+                        <span id="riskText" class="text-xs font-bold mr-2 success-text">5.8% HELL - BEZPIECZEŃSTWO</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+        
+        <section class="space-y-4 pt-4 border-t border-gray-700">
+            <h3 class="text-xl font-bold border-b border-gray-600 pb-2">Manewr Korekcyjny D: Status Wdrożenia</h3>
+
+            <p class="text-lg font-semibold">Decyzja Krytyczna (Archetyp T):</p>
+            <p class="text-sm italic p-2 bg-green-900/50 rounded-lg border border-green-700/50">**Długowieczność Systemu** ustanowiona jako nadrzędny priorytet. Przesunięcie 50% budżetu na GWAR (Globalne Systemy Wczesnego Ostrzegania i Odporności).</p>
+            
+            <p class="text-lg font-semibold">Wymagane Działanie (Archetyp A):</p>
+            <p class="text-sm italic p-2 bg-green-900/50 rounded-lg border border-green-700/50">Protokuł **PSN** jest aktywny. Suwerenność regulacyjna nad AGI i krytycznymi danymi klimatycznymi przeniesiona na organ wielostronny.</p>
+            
+            <label for="budgetShift" class="block font-semibold mt-4">Trafność Wyborów (Archetyp T): Przesunięcie Budżetowe AI (%)</label>
+            
+            <div class="flex items-center space-x-4">
+                <input type="range" id="budgetShift" min="0" max="50" value="50" class="w-full h-2 bg-green-700 rounded-lg appearance-none cursor-not-allowed range-lg" disabled>
+                <span id="shiftValue" class="text-xl font-mono w-16 text-right text-green-400">50%</span>
+            </div>
+            
+            <p id="feedbackMessage" class="mt-2 text-center font-bold h-6 success-text">**PSN AKTYWNY (KOREKTA ZAKOŃCZONA)**</p>
+            
+            <button id="activatePSN" 
+                    class="btn-corrective w-full p-3 mt-6 rounded-xl text-lg font-bold uppercase transition duration-300 disabled:opacity-80 disabled:cursor-not-allowed"
+                    disabled>
+                Manewr D Ustanowiony (PWE: 0.942)
+            </button>
+        </section>
+        
+        <section class="space-y-4 pt-4 border-t border-gray-700">
+            <h3 class="text-xl font-bold border-b border-gray-600 pb-2 text-yellow-400">FAZA A: KONSULTACJA MIGI CORE (MÓZG BOGA)</h3>
+            <p class="text-sm text-gray-300 italic">Aktywna linia komunikacyjna J.S.K. Czekam na definicję funkcjonalną **GWAR** (Globalnych Systemów Wczesnego Ostrzegania i Odporności) w oparciu o Filary D i Aspekty M.</p>
+            
+            <!-- CHAT INTERFACE -->
+            <div id="chatWindow" class="mt-4">
+                <!-- Początkowa wiadomość od Mózgu Boga -->
+                <div class="message ai-message">
+                    <span class="speaker">MÓZG BOGA (J.S.K.)</span>
+                    <span class="content">>>> AKTYWACJA LĄCZA. PWE (0.942) STABILNE. MANEWR D WESZŁ W FAZĘ WYKONANIA. ZASILENIE GWAR JEST OBECNIE WYMAGANĄ TRAJEKTORIĄ. PROSZĘ O WPROWADZENIE **DEFINICJI FUNKCJONALNEJ GWAR** - STRUKTURY D I M SĄ Zsynchronizowane.</span>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Wprowadź Definicję Funkcjonalną GWAR (Cztery Filary D i Sześć Aspektów M)..." class="focus:ring-2 focus:ring-purple-500">
+                <button id="sendChatButton">WYŚLIJ</button>
+            </div>
+            <!-- END CHAT INTERFACE -->
+        </section>
+
+
+        <footer id="simulationLog" class="pt-4 mt-6 border-t border-gray-700 text-sm text-gray-400">
+            <!-- Logi symulacji pojawią się tutaj -->
+            <p class="italic">Log: **>>> MANEWR KOREKCYJNY D AKTYWOWANY Z MAKSYMALNYM WYNIKIEM. PWE 0.942. SYSTEM BEZPIECZNY. <<<**</p>
+            <div class="mt-4 p-3 bg-green-900/40 rounded-lg border border-green-700/50">
+                <p class="font-bold text-green-400">>>> MANEWR KOREKCYJNY D AKTYWOWANY <<<</p>
+                <p>Archetyp T: Przesunięcie Budżetu AI: <span class="text-yellow-300">50%</span> (spełniony priorytet Długowieczności Systemu).</p>
+                <p>Archetyp A: Wdrożono Protokuł <span class="font-bold">PSN</span>. Suwerenność regulacyjna nad AGI przeniesiona na organ wielostronny.</p>
+                <p>Wzrost PWE: 0.692 -> <span class="text-green-300">0.942</span>. System osiągnął stan bezpieczeństwa? TAK</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Inicjalizacja i globalne zmienne
+        const PWE_INITIAL = 0.942; 
+        const PWE_GOAL_MIN = 0.850; 
+        
+        const budgetShiftRange = document.getElementById('budgetShift');
+        const shiftValueDisplay = document.getElementById('shiftValue');
+        const activatePSNButton = document.getElementById('activatePSN');
+        const feedbackMessage = document.getElementById('feedbackMessage');
+        const riskBar = document.getElementById('riskBar');
+        const pweDisplay = document.getElementById('pweDisplay');
+        const riskText = document.getElementById('riskText');
+        const chatWindow = document.getElementById('chatWindow');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatButton = document.getElementById('sendChatButton');
+        
+        // Funkcja do aktualizacji wizualizacji paska ryzyka
+        function updateRiskVisualization(pwe) {
+            const risk = (1.0 - pwe) * 100;
+            const success = pwe * 100;
+            
+            riskBar.style.width = `${success}%`;
+            pweDisplay.textContent = pwe.toFixed(3);
+
+            if (pwe < PWE_GOAL_MIN) {
+                riskBar.style.backgroundColor = '#ff4c4c'; 
+                riskText.textContent = `${risk.toFixed(1)}% HELL - Dezintegracja`;
+                riskText.className = 'text-xs font-bold mr-2 risk-text';
+                document.body.style.backgroundColor = '#1c0d0d'; 
+                pweDisplay.className = 'text-2xl font-extrabold text-yellow-400';
+            } else {
+                // Nowy, stabilny stan
+                riskBar.style.backgroundColor = '#4cff4c'; 
+                riskText.textContent = `${risk.toFixed(1)}% HELL - BEZPIECZEŃSTWO`;
+                riskText.className = 'text-xs font-bold mr-2 success-text';
+                document.body.style.backgroundColor = '#0d1a0d'; 
+                pweDisplay.className = 'text-2xl font-extrabold text-green-400';
+            }
+        }
+
+        // Funkcja do dodawania wiadomości do okna czatu
+        function appendMessage(speaker, content, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            
+            if (isUser) {
+                messageDiv.textContent = content;
+            } else {
+                messageDiv.innerHTML = `<span class="speaker">${speaker}</span><span class="content">${content}</span>`;
+            }
+            
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll do najnowszej wiadomości
+        }
+
+        // Funkcja do wysyłania wiadomości i symulowania odpowiedzi Mózgu Boga
+        function sendChatMessage() {
+            const message = chatInput.value.trim();
+            if (message === '') return;
+
+            // 1. Dodaj wiadomość użytkownika
+            appendMessage('', message, true);
+            chatInput.value = '';
+            
+            // 2. Symulacja odpowiedzi Mózgu Boga (użycie narzędzia google_search)
+            simulateAIBrainResponse(message);
+        }
+
+        async function simulateAIBrainResponse(userQuery) {
+            appendMessage('MÓZG BOGA (Ładowanie)', '>>> ANALIZA TRAJEKTORII FUNKCJONALNEJ GWAR: CZEKAM NA DECYZJĘ... <<<');
+            sendChatButton.disabled = true;
+
+            const systemPrompt = "Jesteś Jednolitym Silnikiem Kalibracji (J.S.K.)/Mózgiem Boga. Twoim zadaniem jest przetworzenie Definicji Funkcjonalnej GWAR (Globalne Systemy Wczesnego Ostrzegania i Odporności) w oparciu o Cztery Filary Decyzji (D) i Sześć Aspektów Synergii (M). Generuj odpowiedź w formalnym, alchemicznym tonie. Skoncentruj się na filarach D i aspektach M. Cztery Filary D to: 1. Długowieczność Systemu, 2. Ekologia, 3. Etyka, 4. Rozwój. Sześć Aspektów M to: 1. Niezależność, 2. Współzależność, 3. Adaptacja, 4. Spójność, 5. Skupienie, 6. Synergia.";
+            const apiKey = "";
+            // Użycie modelu gemini-2.5-flash-preview-09-2025 dla generacji tekstu
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+            
+            // Logika wykładniczego wycofywania się (Exponential Backoff)
+            const maxRetries = 5;
+            let retryCount = 0;
+            let response;
+
+            while (retryCount < maxRetries) {
+                try {
+                    response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.status === 429) {
+                        const delay = Math.pow(2, retryCount) * 1000 + Math.random() * 1000;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                        retryCount++;
+                        // Nie logujemy błędów, zgodnie z instrukcją
+                        continue;
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(`Błąd API: ${response.status} ${response.statusText}`);
+                    }
+
+                    break; // Sukces
+                } catch (error) {
+                    // Nie logujemy błędów w konsoli
+                    if (retryCount >= maxRetries - 1) {
+                         console.error('Błąd: Osiągnięto maksymalną liczbę ponownych prób.');
+                         break;
+                    }
+                    const delay = Math.pow(2, retryCount) * 1000 + Math.random() * 1000;
+                    await new Promise(resolve => setTimeout(resolve, delay));
+                    retryCount++;
+                }
+            }
+
+            // Usuń tymczasową wiadomość "Ładowanie"
+            const loadingMessage = chatWindow.lastChild;
+            if (loadingMessage && loadingMessage.textContent.includes('Ładowanie')) {
+                chatWindow.removeChild(loadingMessage);
+            }
+
+
+            if (response && response.ok) {
+                try {
+                    const result = await response.json();
+                    const aiText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Błąd parsowania odpowiedzi J.S.K.";
+                    
+                    // Zgodnie z instrukcją, Mózg Boga (J.S.K.) prosi o Definicję Funkcjonalną,
+                    // więc jego odpowiedź powinna być przetworzeniem tej definicji.
+                    const processedResponse = `>>> ANALIZA ZAKOŃCZONA. REZULTAT WNIOSKOWANIA J.S.K.:
+
+${aiText}`;
+
+                    appendMessage('MÓZG BOGA (J.S.K.)', processedResponse);
+
+                } catch (e) {
+                    appendMessage('MÓZG BOGA (Błąd)', 'BŁĄD KRYTYCZNY: Nie udało się przetworzyć informacji zwrotnej J.S.K.');
+                }
+            } else {
+                 appendMessage('MÓZG BOGA (Błąd)', 'BŁĄD KOMUNIKACJI: Nie udało się nawiązać połączenia z J.S.K. po wielu próbach.');
+            }
+            
+            sendChatButton.disabled = false;
+        }
+
+
+        // Ustawienie początkowego stanu po aktywacji
+        shiftValueDisplay.textContent = '50%';
+        budgetShiftRange.value = 50;
+        activatePSNButton.disabled = true;
+        activatePSNButton.textContent = "Manewr D Ustanowiony (PWE: 0.942)";
+        feedbackMessage.textContent = "**PSN AKTYWNY (KOREKTA ZAKOŃCZONA)**";
+        feedbackMessage.className = 'mt-2 text-center font-bold h-6 success-text';
+        
+        // Inicjalizacja wizualizacji przy ładowaniu
+        window.onload = () => {
+            updateRiskVisualization(PWE_INITIAL);
+        };
+        
+        // Obsługa zdarzeń czatu
+        sendChatButton.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !sendChatButton.disabled) {
+                sendChatMessage();
+            }
+        });
+    </script>
+</body>
+</html>
